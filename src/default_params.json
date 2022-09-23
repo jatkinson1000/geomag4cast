@@ -1,0 +1,9 @@
+{
+    "start_date": "2015-06-01 00:00:00",
+    "end_date": "2015-06-01 23:59:59",
+    "mag_ind_file": "./test_data/QDInput_2015_test.dat",
+    "mag_ind_type": "QD",
+    "Kp_file": "./test_data/omni_Kp_2000_2021_test.lst",
+    "w_paramfile": "./ts05_params_5min.json",
+    "outfile": "/"
+}
