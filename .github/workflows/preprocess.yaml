@@ -1,0 +1,43 @@
+name: preprocess - check Black and run tests
+
+jobs:
+  py-black:
+    name: Preprocessing - Formatting (black)
+    runs-on: ubuntu-latest
+    steps:
+
+    - uses: actions/checkout@v3
+
+    - uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - run: pip install black
+
+    # --check fails if black would reformat, succeeds if no changes
+    - run: black --check src/preprocess.py
+
+  runtests:
+    name: Run preprocessing.py tests
+    runs-on: ubuntu-latest
+    steps:
+
+    - uses: actions/checkout@v3
+
+    - uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pytest
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+    - name: Test with pytest
+      run: pytest
+
+on:
+  push:
+    branches:
+      - 'main'
