@@ -61,8 +61,12 @@ def preprocess_data(data, ind_end, max_window):
     t_since_max = ind_end - max_amp_ind
 
     peaks, _ = find_peaks(data.W3[ind_end-int(24*60/5):ind_end], distance=24)
-    last_peak_amp = data[peaks[-1]]
-    ind_since_last_peak = ind_end - peaks[-1]
+    try:
+        last_peak_amp = data.W3[peaks[-1]]
+        ind_since_last_peak = ind_end - peaks[-1]
+    except IndexError:
+        last_peak_amp = 0.0
+        ind_since_last_peak = 1000000000
 
     input = np.append(means, vars)
     input = np.append(input, [max_amp, max_amp_ind, last_peak_amp, ind_since_last_peak])
@@ -70,9 +74,9 @@ def preprocess_data(data, ind_end, max_window):
     output_window = int(6*60/5)
 
     mean6h = np.mean(data.W3[ind_end:ind_end+output_window])
-    var6h  = np.var(data.W3[ind_end:ind_end+output_window])
+    var6h = np.var(data.W3[ind_end:ind_end+output_window])
     mean24h = np.mean(data.W3[ind_end:ind_end+4*output_window])
-    var24h  = np.var(data.W3[ind_end:ind_end+4*output_window])
+    var24h = np.var(data.W3[ind_end:ind_end+4*output_window])
 
     output = np.array([mean6h, var6h, mean24h, var24h])
 
@@ -82,7 +86,7 @@ def preprocess_data(data, ind_end, max_window):
 
 if __name__ == "__main__":
 
-    mag_input, _, _, _ = MagInput.from_QD_file('../data/QDInput_1year.dat')
+    mag_input, _, _, _ = MagInput.from_QD_file('../data/QDInput_test.dat')
 
     Ts = 5 # minutes
     hour_window = int(60/Ts)
@@ -92,15 +96,18 @@ if __name__ == "__main__":
     N = np.size(mag_input.dens)
     N_reduced = int((N - back_window) / hour_window - 1)
 
-    input = np.array([])
-    output = np.array([])
-
+    input = None
+    output = None
     for i in range(N_reduced):
 
         next_window = int((i+1)*hour_window + back_window)
         input_i, output_i = preprocess_data(mag_input, next_window, back_window)
 
-        input = np.concatenate(input, input_i, axis=1)
-        output = np.concatenate(output, output_i, axis=1)
+        if input is not None:
+            input.concatenate(input_i, axis=1)
+            output.concatenate(output_i, axis=1)
+        else:
+            input = input_i
+            output = output_i
 
     pickle.dump( [input, output], open( "data_1year_reduced.p", "wb" ) )
