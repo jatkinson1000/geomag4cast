@@ -5,9 +5,28 @@ from datetime import datetime
 import numpy as np
 import pickle
 
+from scipy.signal import find_peaks
+
 
 def preprocess_data(data, ind_end, max_window):
+    """ function preprocess_data
+    processes time window preceding etime to return input metrics for prediction code
 
+    Parameters
+    ----------
+    data : MagInput
+        input data
+    ind_end : int
+        end index of window
+    max_window : int
+        number of indices in window
+
+    Returns
+    -------
+    input, output : ndarray
+        arrays of input and output variables for neural net
+
+    """
     means = np.array([])
     vars  = np.array([])
 
@@ -37,7 +56,16 @@ def preprocess_data(data, ind_end, max_window):
 
         window_size = int(window_size * 2)
 
-    input = np.append(means,vars);
+    max_amp = np.max(data.W3[ind_end-int(24*60/5):ind_end])
+    max_amp_ind = np.argmax(data.W3[ind_end-int(24*60/5):ind_end])
+    t_since_max = ind_end - max_amp_ind
+
+    peaks, _ = find_peaks(data.W3[ind_end-int(24*60/5):ind_end], distance=24)
+    last_peak_amp = data[peaks[-1]]
+    ind_since_last_peak = ind_end - peaks[-1]
+
+    input = np.append(means, vars)
+    input = np.append(input, [max_amp, max_amp_ind, last_peak_amp, ind_since_last_peak])
 
     output_window = int(6*60/5)
 
@@ -72,10 +100,7 @@ if __name__ == "__main__":
         next_window = int((i+1)*hour_window + back_window)
         input_i, output_i = preprocess_data(mag_input, next_window, back_window)
 
-        input = np.append(input, input_i);
-        output = np.append(output, output_i);
-
-        print(i)
-
+        input = np.concatenate(input, input_i, axis=1)
+        output = np.concatenate(output, output_i, axis=1)
 
     pickle.dump( [input, output], open( "data_1year_reduced.p", "wb" ) )
