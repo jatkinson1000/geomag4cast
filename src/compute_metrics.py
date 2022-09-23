@@ -61,8 +61,12 @@ def preprocess_data(data, ind_end, max_window):
     t_since_max = ind_end - max_amp_ind
 
     peaks, _ = find_peaks(data.W3[ind_end-int(24*60/5):ind_end], distance=24)
-    last_peak_amp = data[peaks[-1]]
-    ind_since_last_peak = ind_end - peaks[-1]
+    if np.size(peaks) == 0:
+        last_peak_amp = 0;
+        ind_since_last_peak = 100000;
+    else:
+        last_peak_amp = data.W3[peaks[-1]]
+        ind_since_last_peak = ind_end - peaks[-1]
 
     input = np.append(means, vars)
     input = np.append(input, [max_amp, max_amp_ind, last_peak_amp, ind_since_last_peak])
@@ -92,15 +96,15 @@ if __name__ == "__main__":
     N = np.size(mag_input.dens)
     N_reduced = int((N - back_window) / hour_window - 1)
 
-    input = np.array([])
-    output = np.array([])
+    input = np.zeros([172,N_reduced])
+    output = np.zeros([4,N_reduced])
 
     for i in range(N_reduced):
 
         next_window = int((i+1)*hour_window + back_window)
         input_i, output_i = preprocess_data(mag_input, next_window, back_window)
 
-        input = np.concatenate(input, input_i, axis=1)
-        output = np.concatenate(output, output_i, axis=1)
+        input[:,i] = input_i
+        output[:,i] = output_i
 
     pickle.dump( [input, output], open( "data_1year_reduced.p", "wb" ) )
