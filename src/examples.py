@@ -8,7 +8,7 @@ import numpy as np
 
 
 if __name__ == "__main__":
-    mag_input, _, _, _ = MagInput.from_QD_file('/Users/jacson/Downloads/IRBEMData/QD_Indices/QDInput_2015.dat')
+    mag_input, _, _, _ = MagInput.from_QD_file('../data/QDInput_Jul_2000.dat')
 
     # calculate_G(mag_input)
     calculate_W(mag_input, TSParams.load_json_params('ts05_params_5min.json'))
@@ -23,6 +23,9 @@ if __name__ == "__main__":
     ax[0].plot(mag_input.time, mag_input.W1, label='W1')
     ax[0].plot(mag_input.time, mag_input.W2, label='W2')
     ax[0].plot(mag_input.time, mag_input.W3, label='W3')
+    ax[0].plot(mag_input.time, mag_input.W4, label='W4')
+    ax[0].plot(mag_input.time, mag_input.W5, label='W5')
+    ax[0].plot(mag_input.time, mag_input.W6, label='W6')
     ax[0].set_ylim([0, 10])
 
     ax[1].plot(mag_input.time, mag_input.dens, label='dens')
@@ -34,6 +37,6 @@ if __name__ == "__main__":
     for ax_i in ax:
         ax_i.legend()
 
-    ax[-1].set_xlim([datetime(2015, 6, 20), datetime(2015, 6, 30)])
+    ax[-1].set_xlim([datetime(2000, 7, 1), datetime(2000, 7, 31)])
 
     plt.show()

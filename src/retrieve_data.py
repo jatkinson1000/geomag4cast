@@ -268,10 +268,10 @@ if __name__ == '__main__':
     # Store individual files in datadir
     # Generate overall file in outfile
     # NB need to go one day beyond to capture midnight on final day
-    sdate = datetime(2015, 1, 1)
-    edate = datetime(2015, 12, 31)
+    sdate = datetime(2000, 7, 1)
+    edate = datetime(2000, 7, 31)
     datadir = '../data/'
-    outfile = 'QDInput_2015.dat'
+    outfile = 'QDInput_Jul_2000.dat'
     check_dirpaths(sdate, edate, datadir)
     retrieve_QinDenton_RBSP(sdate, edate, datadir, outfile, freq='5m')
 
