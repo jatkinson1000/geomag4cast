@@ -14,7 +14,7 @@ if __name__ == "__main__":
     mag_input, _, _, _ = MagInput.from_QD_file(str(p2f.parent.parent.joinpath('data/QDInput_5year.dat')))
 
     # calculate_G(mag_input)
-    # calculate_W(mag_input, TSParams.load_json_params('ts05_params_5min.json'))
+    #calculate_W(mag_input, TSParams.load_json_params('ts05_params_5min.json'))
 
     fig, ax = plt.subplots(4, 1, sharex='col')
 

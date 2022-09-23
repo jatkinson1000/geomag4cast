@@ -270,20 +270,9 @@ if __name__ == '__main__':
     # Store individual files in datadir
     # Generate overall file in outfile
     # NB need to go one day beyond to capture midnight on final day
-    sdate = datetime(2016, 1, 1)
-    edate = datetime(2016, 1, 2)
-    datadir = str(p2f.parent.parent.joinpath('data/'))
-    print(f'data = {datadir}')
-    outfile = 'QDInput_test.dat'
+    sdate = datetime(2021, 7, 29)
+    edate = datetime(2021, 7, 31)
+    datadir = '../data/'
+    outfile = 'QDInput_2day.dat'
     check_dirpaths(sdate, edate, datadir)
     retrieve_QinDenton_RBSP(sdate, edate, datadir, outfile, freq='5m')
-
-    # # Retrieve TS data for a specified time period
-    # # Store individual files in datadir
-    # # Generate overall file in outfile
-    # sdate = datetime(2015, 1, 1)
-    # edate = datetime(2015, 12, 31)
-    # datadir = '../data/'
-    # outfile = 'TSInput_2015.dat'
-    # check_dirpaths(sdate, edate, datadir)
-    # retrieve_Tsyganenko_Tsyganenko(sdate, edate, datadir, outfile)
