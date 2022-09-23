@@ -2,9 +2,11 @@ import os
 from datetime import datetime, timedelta
 import urllib.request
 import urllib.error
+from pathlib import Path
 
 import requests, zipfile, io
 
+p2f = Path(__file__)
 
 def check_dirpaths(sdate, edate, out_dir):
     """ function check_dirpaths
@@ -24,7 +26,7 @@ def check_dirpaths(sdate, edate, out_dir):
 
     """
     for year in range(sdate.year, edate.year+1):
-        dirpath = f'{out_dir}{year:04d}/'
+        dirpath = f'{out_dir}/{year:04d}/'
         if not os.path.exists(dirpath):
             print('Directory {} does not exist. Creating...'.format(dirpath))
             os.makedirs(dirpath)
@@ -167,7 +169,7 @@ def retrieve_QD_data_day(prcdate, out_dir, res, try_download=True):
     proceed = True
 
     datapath = f'{prcdate.year:04d}/QinDenton_{prcdate.year:04d}{prcdate.month:02d}{prcdate.day:02d}_{res}.txt'
-    filepath_prc = f'{out_dir}{datapath}'
+    filepath_prc = f'{out_dir}/{datapath}'
 
     if not os.path.exists(filepath_prc):
         print('\t\tCannot locate processed QD datafile for ', prcdate.date())
@@ -244,7 +246,7 @@ def retrieve_QinDenton_RBSP(sdate, edate, datadir, outfile, freq='5m'):
         success = retrieve_QD_data_day(prcdate, datadir, res, try_download=True)
         if success:
             datapath = f'{prcdate.year:04d}/QinDenton_{prcdate.year:04d}{prcdate.month:02d}{prcdate.day:02d}_{res}.txt'
-            filepath_prc = f'{datadir}{datapath}'
+            filepath_prc = f'{datadir}/{datapath}'
             with open(filepath_prc, 'r') as rf:
                 lines = rf.readlines()
                 if firstfile:
@@ -268,10 +270,11 @@ if __name__ == '__main__':
     # Store individual files in datadir
     # Generate overall file in outfile
     # NB need to go one day beyond to capture midnight on final day
-    sdate = datetime(2000, 7, 1)
-    edate = datetime(2000, 7, 31)
-    datadir = '../data/'
-    outfile = 'QDInput_Jul_2000.dat'
+    sdate = datetime(2016, 1, 1)
+    edate = datetime(2016, 1, 2)
+    datadir = str(p2f.parent.parent.joinpath('data/'))
+    print(f'data = {datadir}')
+    outfile = 'QDInput_test.dat'
     check_dirpaths(sdate, edate, datadir)
     retrieve_QinDenton_RBSP(sdate, edate, datadir, outfile, freq='5m')
 
