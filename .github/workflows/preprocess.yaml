@@ -15,10 +15,10 @@ jobs:
     - run: pip install black
 
     # --check fails if black would reformat, succeeds if no changes
-    - run: black --check src/preprocess.py
+    - run: black --check src/compute_metrics.py
 
   runtests:
-    name: Run preprocessing.py tests
+    name: Run compute_metrics.py tests
     runs-on: ubuntu-latest
     steps:
 
